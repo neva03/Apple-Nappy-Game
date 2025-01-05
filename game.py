@@ -73,8 +73,8 @@ def draw_plate():
      gameDisplay.blit(monkey_image, (plate_x, plate_y))
 
 # Function to draw the plate
-def draw_plate():
-    pygame.draw.rect(gameDisplay, light_blue, (plate_x, plate_y, plate_width, plate_height))
+#def draw_plate():
+   # pygame.draw.rect(gameDisplay, light_blue, (plate_x, plate_y, plate_width, plate_height))
 
 # Function to draw the falling objects (circles)
 def draw_circles():
