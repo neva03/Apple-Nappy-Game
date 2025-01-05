@@ -16,6 +16,7 @@ pygame.display.set_caption('Fruit Nappy')
 # Colors
 black = (0, 0, 0)
 light_blue = (0, 200, 255)
+red=(230,0,0)
 
 # Frames Per Second (FPS) settings
 clock = pygame.time.Clock()
@@ -44,6 +45,7 @@ circles = []  # List to track falling objects (fruits/skulls)
 heart_image = pygame.image.load("heart.png")
 heart_image = pygame.transform.scale(heart_image, (40, 40))
 
+
 # Fruit images
 apple_image = pygame.image.load("apple.png")
 apple_image = pygame.transform.scale(apple_image, (60, 60))
@@ -58,8 +60,17 @@ skull_image = pygame.transform.scale(skull_image, (60, 60))
 background_image = pygame.image.load("background.png")
 background_image = pygame.transform.scale(background_image, (screenWidth, screenHeight))
 
+# Monkey image
+monkey_image = pygame.image.load(r"monkey.png")
+monkey_image = pygame.transform.scale(monkey_image, (70, 70))  # Plate'in boyutlarına uygun
+
 # Font for rendering text
 font = pygame.font.Font(None, 36)
+
+#function to draw the monkey 
+def draw_plate():
+     plate_y =+510
+     gameDisplay.blit(monkey_image, (plate_x, plate_y))
 
 # Function to draw the plate
 def draw_plate():
@@ -146,6 +157,34 @@ def game_over():
     button_y = screenHeight // 2 + 50
     draw_button("Restart", button_x, button_y, button_width, button_height, light_blue, black, restart_game)
 
+#function to countdown 
+def countdown():
+    
+    for i in range(3, 0, -1):  # 3'ten 1'e kadar sayar
+        for size in range(50, 150, 5):  # Yazı boyutunu büyütür (50'den 150'ye)
+            gameDisplay.blit(background_image, (0, 0))  # Arka planı çiz
+            countdown_font = pygame.font.Font(None, size)  # Dinamik yazı boyutu
+            text = countdown_font.render(str(i), True, red)
+            text_rect = text.get_rect(center=(screenWidth // 2, screenHeight // 2))
+            gameDisplay.blit(text, text_rect)
+            pygame.display.update()
+            pygame.time.delay(10)  # Küçük bir gecikme ile animasyon yaratır
+        
+        pygame.time.delay(500)  # Sayı ekranda kısa süre kalır
+
+    # "Go!" animasyonu
+    for size in range(50, 150, 5):  # "Go!" yazısını büyütür
+        gameDisplay.blit(background_image, (0, 0))  # Arka planı çiz
+        countdown_font = pygame.font.Font(None, size)  # Dinamik yazı boyutu
+        text = countdown_font.render("Go!", True, red)
+        text_rect = text.get_rect(center=(screenWidth // 2, screenHeight // 2))
+        gameDisplay.blit(text, text_rect)
+        pygame.display.update()
+        pygame.time.delay(10)  # Küçük bir gecikme ile animasyon yaratır
+
+    pygame.time.delay(500)  # "Go!" ekranda kısa süre kalır
+
+
 # Function to show high score below the current score
 def show_high_score():
     text = font.render(f"High Score: {max_score}", True, black)
@@ -189,6 +228,7 @@ def show_menu():
 
 # Function to start the game
 def start_game():
+    countdown()
     global running, menu_running, max_score, is_paused
     max_score = 0  # Reset high score
     running = True  # Enter game loop
@@ -243,6 +283,37 @@ running = True
 while running:
     gameDisplay.blit(background_image, (0, 0))  # Draw background
 
+    # Ekranda en fazla 5 nesne olmasını sağlıyoruz
+    if random.randint(1, 180) == 1:
+                is_fruit = random.choice(["apple", "grape", "skull"])  
+                margin =150
+                x = random.randint(margin + circle_radius, screenWidth - margin - circle_radius)
+                y = -circle_radius
+                circles.append((x, y, "white", is_fruit))
+
+            # Gruplar
+    if len(circles) < 5 and random.randint(1, 180) == 1:
+               group_x = random.randint(100, screenWidth - 100)  # Grup merkezi
+               initial_y = -circle_radius  # İlk meyvenin başlangıç yüksekliği
+            
+               for i in range(random.randint(1,2)):  # Aynı anda 1-2 meyve düşür
+                   while True:  # Uygun bir pozisyon bulana kadar döngü
+                       x = random.randint(max(0, group_x - 50), min(screenWidth, group_x + 50))  # Grup içindeki pozisyon
+                       y = initial_y - i * (circle_radius + 13)  # Meyve aralarına mesafe koy
+                       is_fruit = random.choice(["apple", "grape", "skull"])  # Rastgele bir nesne seç
+
+                    # Çakışmayı kontrol et
+                       overlap = False
+                       for existing_x, existing_y, _, existing_type in circles:
+                           if abs(x - existing_x) < circle_radius * 2 and abs(y - existing_y) < circle_radius * 2:
+                               if (is_fruit == "skull" and existing_type in ["apple", "grape"]) or \
+                                  (is_fruit in ["apple", "grape"] and existing_type == "skull"):
+                                   overlap = True
+                                   break
+                    
+                       if not overlap:
+                            break  # Eğer çakışma yoksa döngüden çık ve meyveyi ekle
+                   circles.append((x, y, "white", is_fruit))  # Meyveyi listeye ekle
     for event in pygame.event.get():
         if event.type == pygame.QUIT:  # Exit the game if the close button is pressed
             running = False
@@ -290,6 +361,8 @@ while running:
                 break
     elif is_failed:  # If game is over, display game over screen
         game_over()
+
+    
 
     # Draw game elements
     draw_plate()
