@@ -38,7 +38,7 @@ max_score = 0  # Player's high score
 
 # Circle properties
 circle_radius = 20
-circle_speed = 5
+circle_speed = 4.5
 circles = []  # List to track falling objects (fruits/skulls)
 
 # Heart image for lives display
@@ -292,7 +292,7 @@ while running:
                 circles.append((x, y, "white", is_fruit))
 
             # Gruplar
-    if len(circles) < 5 and random.randint(1, 180) == 1:
+    if len(circles) < 4 and random.randint(1, 180) == 1:
                group_x = random.randint(100, screenWidth - 100)  # Grup merkezi
                initial_y = -circle_radius  # İlk meyvenin başlangıç yüksekliği
             
