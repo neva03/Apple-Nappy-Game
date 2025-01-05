@@ -38,7 +38,7 @@ max_score = 0  # Player's high score
 
 # Circle properties
 circle_radius = 20
-circle_speed = 4.5
+circle_speed = 4
 circles = []  # List to track falling objects (fruits/skulls)
 
 # Heart image for lives display
@@ -284,15 +284,15 @@ while running:
     gameDisplay.blit(background_image, (0, 0))  # Draw background
 
     # Ekranda en fazla 5 nesne olmasını sağlıyoruz
-    if random.randint(1, 180) == 1:
+    if len(circles)==1 and random.randint(1, 180) == 1:
                 is_fruit = random.choice(["apple", "grape", "skull"])  
-                margin =150
+                margin =200
                 x = random.randint(margin + circle_radius, screenWidth - margin - circle_radius)
                 y = -circle_radius
                 circles.append((x, y, "white", is_fruit))
 
             # Gruplar
-    if len(circles) < 4 and random.randint(1, 180) == 1:
+    if len(circles) < 2 and random.randint(1, 180) == 1:
                group_x = random.randint(100, screenWidth - 100)  # Grup merkezi
                initial_y = -circle_radius  # İlk meyvenin başlangıç yüksekliği
             
