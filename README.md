@@ -1,4 +1,4 @@
-# Fruit-Nappy-Game
+# Apple-Nappy-Game
 oyuncu kırmızı daireyi yakalarsa veya meyveleri yakalayamazsa yanıyor. 
 eklenecekler:
 *restart
